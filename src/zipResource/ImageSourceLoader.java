@@ -5,7 +5,6 @@
  */
 package zipResource;
 
-
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.net.URL;
@@ -22,12 +21,11 @@ public class ImageSourceLoader extends javax.swing.JFrame {
      * Creates new form ImageSourceLoader
      */
     
-    URL zipFile = this.getClass().getResource("encryptedFiles/nn.zip");
-    String imgfile="web-rdio.png";    
+    URL zipFile = this.getClass().getResource("encryptedFiles/test.zip");     
        
     public ImageSourceLoader() throws IOException, URISyntaxException, Exception{
         initComponents();          
-        jLabel1.setIcon(ZipResource.loadImageFromZip(zipFile,imgfile));
+        jLabel1.setIcon(ZipResource.loadImageFromZip(zipFile,"web-rdio.png"));
         jLabel1.setText(zipFile.toString());
     }    
     

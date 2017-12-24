@@ -188,9 +188,7 @@ public class ZipResource extends InputStream {
     }
 
     private static InputStream readZipSifra(URL zipname, String filename) throws IOException, URISyntaxException, Exception {
-
-        URLConnection connection = zipname.openConnection();
-        
+        URLConnection connection = zipname.openConnection();        
         try (
             // password-protected zip file I need to read
             InputStream in = connection.getInputStream();
@@ -201,7 +199,6 @@ public class ZipResource extends InputStream {
             ZipInputStream zis = new ZipInputStream(zdis)) {
             // read all the zip entries and save them as files
             ZipEntry ze;
-
             while ((ze = zis.getNextEntry()) != null) {
                 if (ze.getName().equals(filename)) {
                     InputStream is = convertZipInputStreamToInputStream(zis, ze);
@@ -242,7 +239,7 @@ public class ZipResource extends InputStream {
         try {
             byte[] bytes = getImage(readZipSifra(zipfile, fileName));
             BufferedImage img = ImageIO.read(new ByteArrayInputStream(bytes));
-            System.out.println("img created");
+            //System.out.println("img created");
             ImageIcon icon = new ImageIcon(img);
             return icon;
         } catch (IOException e) {
@@ -250,7 +247,6 @@ public class ZipResource extends InputStream {
             e.printStackTrace();
         }
         return null;
-
     }	
 }
 

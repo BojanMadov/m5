@@ -201,7 +201,7 @@ public class ZipResource extends InputStream {
             ZipEntry ze;
             while ((ze = zis.getNextEntry()) != null) {
                 if (ze.getName().equals(filename)) {
-                    InputStream is = convertZipInputStreamToInputStream(zis, ze);
+                    InputStream is = convertZipInputStreamToInputStream(zis);
                     zis.closeEntry();
                     return is;
                 }
@@ -210,7 +210,7 @@ public class ZipResource extends InputStream {
         return null;
     }
 
-    private static InputStream convertZipInputStreamToInputStream(ZipInputStream in, ZipEntry entry) throws IOException {
+    private static InputStream convertZipInputStreamToInputStream(ZipInputStream in) throws IOException {
         final int BUFFER = 2048;
         int count = 0;
         byte data[] = new byte[BUFFER];

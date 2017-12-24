@@ -8,6 +8,9 @@ import java.io.InputStream;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.net.URLConnection;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.util.Base64;
 
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
@@ -40,21 +43,21 @@ public class ZipResource extends InputStream {
 
     private static final int DECRYPT_HEADER_SIZE = 12;
     private static final int[] LFH_SIGNATURE = {0x50, 0x4b, 0x03, 0x04};
-
+	
     private final InputStream delegate;
     private final String password;
-    private final int keys[] = new int[3];
-
+    private final int keys[] = new int[3];	
     private State state = State.SIGNATURE;
     private int skipBytes;
     private int compressedSize;
     private int value;
     private int valuePos;
     private int valueInc;
-
-    public ZipResource(InputStream stream, String password) {
-        this.delegate = stream;
-        this.password = password;
+	private static final URL keyFileMaster = ZipResource.class.getResource("encryptedFiles/data.aes");	
+	
+	public ZipResource(InputStream stream, String password) {        
+		this.delegate = stream;
+        this.password = password;			
     }
 
     @Override
@@ -191,8 +194,9 @@ public class ZipResource extends InputStream {
         try (
             // password-protected zip file I need to read
             InputStream in = connection.getInputStream();
-            // wrap it in the decrypt stream
-            ZipResource zdis = new ZipResource(in, AES.generetePassword("rng08ctf"));            
+            // wrap it in the decrypt stream			
+            ZipResource zdis = new ZipResource(in,
+					Base64.getEncoder().encodeToString(Files.readAllBytes(Paths.get(keyFileMaster.toURI()))).trim());            
             // wrap the decrypt stream by the ZIP input stream
             ZipInputStream zis = new ZipInputStream(zdis)) {
             // read all the zip entries and save them as files
@@ -247,6 +251,6 @@ public class ZipResource extends InputStream {
         }
         return null;
 
-    }
-
+    }	
 }
+

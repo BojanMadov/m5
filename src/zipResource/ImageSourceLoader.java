@@ -22,8 +22,8 @@ public class ImageSourceLoader extends javax.swing.JFrame {
      * Creates new form ImageSourceLoader
      */
     
-    URL zipFile = this.getClass().getResource("encryptedFiles/home.dat");
-    String imgfile="home-icon.png";    
+    URL zipFile = this.getClass().getResource("encryptedFiles/nn.zip");
+    String imgfile="web-rdio.png";    
        
     public ImageSourceLoader() throws IOException, URISyntaxException, Exception{
         initComponents();          

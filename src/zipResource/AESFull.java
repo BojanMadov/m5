@@ -22,7 +22,7 @@ import javax.crypto.spec.SecretKeySpec;
  *
  * @author Bojan
  */
-public class AES {
+public class AESFull {
 
     private static final byte[] SALT = {
         (byte) 0xA9, (byte) 0x9B, (byte) 0xC8, (byte) 0x32,
@@ -32,14 +32,14 @@ public class AES {
     private static final int KEY_LENGTH = 256;
     private Cipher ecipher;
     private Cipher dcipher;
-    URL zipFile= this.getClass().getResource("encryptedFiles/data.aes"); 
+    URL keyFileOriginal= this.getClass().getResource("encryptedFiles/key.txt"); 
     
-    AES(String passPhrase) throws Exception {
+    AESFull(String passPhrase) throws Exception {
         SecretKeyFactory factory = SecretKeyFactory.getInstance("PBKDF2WithHmacSHA1");
         KeySpec spec = new PBEKeySpec(passPhrase.toCharArray(), SALT, ITERATION_COUNT, KEY_LENGTH);
         SecretKey tmp = factory.generateSecret(spec);
         SecretKey secret = new SecretKeySpec(tmp.getEncoded(), "AES");
-		
+
         ecipher = Cipher.getInstance("AES/CBC/PKCS5Padding");
         ecipher.init(Cipher.ENCRYPT_MODE, secret);
         
@@ -68,31 +68,20 @@ public class AES {
         return dcipher.doFinal(encrypt);
     }
 
-    public static String generetePassword(String password) throws Exception{
-        
-        AES encrypter = new AES(password);         
-        String fileString = new String(Files.readAllBytes(Paths.get(encrypter.zipFile.toURI())), StandardCharsets.UTF_8);
-        String decrypted = encrypter.decrypt(fileString); 
-        System.out.println("Decrypt(\"" + password + "\") = \"" + decrypted + "\"");
-        
-        return decrypted;
-        
-    }
     public static void main(String[] args) throws Exception {
-
-        String message = "MESSAGE";
-        String password = "PASSWORD";
-
-        AES encrypter = new AES(password);
         
-		String encrypted = encrypter.encrypt(message);
+        String password = "rng08ctf";
+
+        AESFull encrypter = new AESFull(password);
+		String fileString = new String(Files.readAllBytes(Paths.get(encrypter.keyFileOriginal.toURI())), StandardCharsets.UTF_8);
+		
+        String encrypted = encrypter.encrypt(fileString);
         String decrypted = encrypter.decrypt(encrypted);
-   
-        String fileString = new String(Files.readAllBytes(Paths.get(encrypter.zipFile.toURI())), StandardCharsets.UTF_8);
+        
         System.out.println("Contents (Java 7 with character encoding ) : " + fileString);
         
-        System.out.println("Encrypt(\"" + message + "\", \"" + password + "\") = \"" + encrypted + "\"");
-        System.out.println("Decrypt(\"" + encrypted + "\", \"" + password + "\") = \"" + decrypted + "\"");
+        System.out.println("Encrypt(\"" + password + "\") = \"" + encrypted + "\"");
+        //System.out.println("Decrypt(\"" + encrypted + "\", \"" + password + "\") = \"" + decrypted + "\"");
     }
 
 }

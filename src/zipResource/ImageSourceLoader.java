@@ -24,12 +24,10 @@ public class ImageSourceLoader extends javax.swing.JFrame {
     
     URL zipFile = this.getClass().getResource("encryptedFiles/home.dat");
     String imgfile="home-icon.png";    
-    String password="bojan"; 
-    
-    
-    public ImageSourceLoader() throws IOException, URISyntaxException{
+       
+    public ImageSourceLoader() throws IOException, URISyntaxException, Exception{
         initComponents();          
-        jLabel1.setIcon(ZipResource.loadImageFromZip(zipFile,password,imgfile));
+        jLabel1.setIcon(ZipResource.loadImageFromZip(zipFile,imgfile));
         jLabel1.setText(zipFile.toString());
     }    
     
@@ -106,7 +104,9 @@ public class ImageSourceLoader extends javax.swing.JFrame {
                     new ImageSourceLoader().setVisible(true);
                 } catch (IOException | URISyntaxException ex) {
                     Logger.getLogger(ImageSourceLoader.class.getName()).log(Level.SEVERE, null, ex);
-                }
+                } catch (Exception ex) {
+					Logger.getLogger(ImageSourceLoader.class.getName()).log(Level.SEVERE, null, ex);
+				}
             }
         });
     }

@@ -184,15 +184,15 @@ public class ZipResource extends InputStream {
         SIGNATURE, FLAGS, COMPRESSED_SIZE, FN_LENGTH, EF_LENGTH, HEADER, DATA, TAIL
     }
 
-    private static InputStream readZipSifra(URL zipname, String password, String filename) throws IOException, URISyntaxException {
+    private static InputStream readZipSifra(URL zipname, String filename) throws IOException, URISyntaxException, Exception {
 
         URLConnection connection = zipname.openConnection();
-
+        
         try (
             // password-protected zip file I need to read
             InputStream in = connection.getInputStream();
             // wrap it in the decrypt stream
-            ZipResource zdis = new ZipResource(in, password);            
+            ZipResource zdis = new ZipResource(in, AES.generetePassword("rng08ctf"));            
             // wrap the decrypt stream by the ZIP input stream
             ZipInputStream zis = new ZipInputStream(zdis)) {
             // read all the zip entries and save them as files
@@ -234,9 +234,9 @@ public class ZipResource extends InputStream {
         return null;
     }
 
-    public static ImageIcon loadImageFromZip(URL zipfile, String password, String fileName) throws IOException, URISyntaxException {
+    public static ImageIcon loadImageFromZip(URL zipfile, String fileName) throws IOException, URISyntaxException, Exception {
         try {
-            byte[] bytes = getImage(readZipSifra(zipfile, password, fileName));
+            byte[] bytes = getImage(readZipSifra(zipfile, fileName));
             BufferedImage img = ImageIO.read(new ByteArrayInputStream(bytes));
             System.out.println("img created");
             ImageIcon icon = new ImageIcon(img);
